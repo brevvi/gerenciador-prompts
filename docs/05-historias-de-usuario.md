@@ -11,7 +11,7 @@ Formato: **Como** [quem], **quero** [o quê], **para** [por quê].
 | H03 | Como editor de moda, quero reusar um prompt trocando só os looks, para não reescrever tudo a cada coleção. | Para cada look informado, o sistema devolve o prompt com o `{{look}}` preenchido. | `reusar_prompt` |
 | H04 | Como editor-chefe, quero aprovar o prompt padrão de cada coleção, para manter a qualidade das imagens. | O prompt ganha o selo "aprovado" no mural; só há um aprovado por coleção. | `aprovar_prompt` |
 | H05 | Como engenheiro, quero receber a imagem aprovada de cada look, com o prompt em `.prompt`, para publicar exatamente o que o editor aprovou, sem depender de WhatsApp. | A entrega traz a imagem aprovada de cada look e o `.prompt` aprovado, e fica registrada. Na v1, só o `.prompt` e a lista de looks (issue #5). | `entregar_colecao` |
-| H06 | Como editor de moda, quero criar uma nova versão de um prompt sem apagar a anterior, para comparar as coleções. | Desafio v3 (ver `03-classes.md`). | — |
+| H06 | Como editor de moda, quero criar uma nova versão de um prompt sem apagar a anterior, para comparar as coleções. | Desafio v3 (ver `03-classes.md`). | nenhuma |
 
 ## O quadro da aula
 

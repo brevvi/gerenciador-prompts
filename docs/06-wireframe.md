@@ -24,7 +24,7 @@ Feito antes de qualquer código, para validar com o "cliente" o que aparece na t
 |  | Editorial de praia     |  | Fundo de estúdio       |          |
 |  | ...A modelo veste      |  | ...A modelo veste      |          |
 |  | [{{look}}]. Enquadra...|  | [{{look}}], de frente..|          |
-|  | — apelido · há 2 min   |  | — apelido · há 6 min   |          |
+|  | por apelido · há 2 min |  | por apelido · há 6 min |          |
 |  |              [ocultar] |  |              [ocultar] |          |
 |  +------------------------+  +------------------------+          |
 +------------------------------------------------------------------+
