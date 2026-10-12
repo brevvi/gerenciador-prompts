@@ -282,5 +282,36 @@
 
   iniciar();
 </script>
+<!-- Devgate: cortina de senha no navegador, não é segurança real. A página guarda só o
+     resumo SHA-256 da senha (não a senha); quem já entrou volta direto, por navegador, via
+     localStorage. Sem <form>: o gate usa botão + Enter via JS. -->
+<div id="gate" style="position:fixed;inset:0;z-index:999999;background:#E9ECED;display:flex;align-items:center;justify-content:center;font-family:'Barlow',Arial,sans-serif;padding:24px">
+  <div style="background:#fff;border:1px solid #C9CFD2;border-radius:12px;padding:40px;max-width:420px;width:100%;box-shadow:0 2px 24px rgba(32,44,70,.12);display:flex;flex-direction:column;gap:16px">
+    <h1 style="margin:0;font-size:22px;font-weight:700;color:#202C46">Mural de Prompts · Fashion Co.</h1>
+    <p style="margin:0;font-size:15px;color:#5B6472;line-height:1.5">Mural da aula de Análise de Sistemas. A senha está na apresentação.</p>
+    <label style="display:flex;flex-direction:column;gap:6px;font-size:14px;color:#202C46;font-weight:600">Senha de acesso
+      <input id="gate-senha" type="password" autocomplete="off" style="font:15px 'Barlow',Arial,sans-serif;padding:10px 12px;border:1px solid #C9CFD2;border-radius:6px">
+    </label>
+    <p id="gate-erro" hidden style="margin:0;font-size:14px;color:#B3261E">Senha incorreta.</p>
+    <button type="button" id="gate-entrar" style="font:600 15px 'Barlow',Arial,sans-serif;color:#fff;background:#202C46;border:none;border-radius:6px;padding:12px;cursor:pointer">Entrar</button>
+  </div>
+</div>
+<script>
+(function(){
+  var K='brevvi_mural_devgate', H='e9b0e66f2d141cc848d8825894dcc0e96019c2fb3edf113ad562af54bce3e54e', g=document.getElementById('gate');
+  function liberar(){g.style.display='none'}
+  function resumo(t){return crypto.subtle.digest('SHA-256',new TextEncoder().encode(t)).then(function(b){return Array.from(new Uint8Array(b),function(x){return x.toString(16).padStart(2,'0')}).join('')})}
+  try{if(localStorage.getItem(K)===H)liberar()}catch(e){}
+  function tentar(){
+    var campo=document.getElementById('gate-senha');
+    resumo(campo.value).then(function(r){
+      if(r===H){try{localStorage.setItem(K,H)}catch(e){}liberar()}
+      else{document.getElementById('gate-erro').hidden=false;campo.value=''}
+    });
+  }
+  document.getElementById('gate-entrar').addEventListener('click',tentar);
+  document.getElementById('gate-senha').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();tentar()}});
+})();
+</script>
 </body>
 </html>
