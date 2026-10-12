@@ -83,7 +83,7 @@ Antes de começar uma tarefa nova, traga as novidades do projeto original:
 
 | Entra no original (por pull request) | Fica no seu fork |
 |---|---|
-| Correções e melhorias pequenas, cada uma ligada a uma issue, com o teste e a análise (`docs/`) atualizados | Os desafios v2, v3 e v4: são de vocês. Mostre o resultado deixando o link do fork numa issue |
+| Correções e melhorias pequenas, cada uma ligada a uma issue, com o teste e a análise (`docs/`) atualizados | Os desafios v2, v3 e v4: são de vocês. Mostre o resultado em [Discussions → Show and tell](https://github.com/brevvi/gerenciador-prompts/discussions/categories/show-and-tell), com o link do fork |
 
 Antes de abrir o pull request, rode os testes: `cd functions && npm install && npm test`.
 
@@ -100,4 +100,4 @@ Antes de abrir o pull request, rode os testes: `cd functions && npm install && n
 | `fatal: destination path 'gerenciador-prompts' already exists` | O clone já foi feito antes nessa pasta | Só entre nela: `cd gerenciador-prompts` |
 | Rodou `git init` por engano numa pasta que só guarda projetos | Essa pasta virou um repositório vazio, e o clone ficaria dentro de outro repositório | Confira que está na pasta certa e que ela não tem commits (`git log` responde *does not have any commits yet*), e apague o repositório vazio: `rm -rf .git` |
 
-Ainda travou? Abra uma [issue](https://github.com/brevvi/gerenciador-prompts/issues) com a mensagem de erro completa e o comando que você rodou.
+Ainda travou? Pergunte em [Discussions → Q&A](https://github.com/brevvi/gerenciador-prompts/discussions/categories/q-a), com a mensagem de erro completa e o comando que você rodou. As **issues** são para trabalho no projeto (defeitos e melhorias); dúvidas e conversas vão para as **Discussions**.
