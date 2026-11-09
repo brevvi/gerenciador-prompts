@@ -49,126 +49,74 @@
     h1{font-size:30px}.intro{font-size:18px}.historia{font-size:18px}
     .colunas{grid-template-columns:1fr}
   }
+
+  .tarefas{display:grid;gap:10px;margin:0;padding:0;border:0}
+  .tarefa{display:flex;gap:14px;align-items:flex-start;padding:14px 18px;border:2px solid var(--line);border-radius:8px;background:#fff;cursor:pointer;font-size:21px;line-height:1.35}
+  .tarefa input{margin-top:5px;width:22px;height:22px;accent-color:var(--accent-ink);flex:none}
+  .tarefa code{font-family:var(--mono);font-size:18px}
+  .tarefa:has(input:checked){border-color:var(--accent-ink);background:var(--soft)}
+  .resultado{margin-top:18px;padding:18px 22px;border-left:6px solid var(--accent-ink);background:var(--soft);font-size:20px;line-height:1.45}
+  .resultado ol{margin:10px 0 0;padding-left:24px}
+  .resultado p{margin:0}
+  @media(max-width:560px){.tarefa{font-size:18px}}
 </style>
 </head>
 <body>
 <main>
-  <p class="eyebrow">Implementação · fatias verticais · 5 minutos</p>
-  <h1>Monte a fatia da H03.</h1>
-  <p class="intro">Uma fatia é uma história de usuário que atravessa todos os arquivos. Em cada arquivo, escolha o pedaço de código que a H03 acrescentou.</p>
+  <p class="eyebrow">Implementação · fatias verticais · 3 minutos</p>
+  <h1>Quais tarefas fazem parte da H03?</h1>
+  <p class="intro">Uma fatia é uma história de usuário entregue de ponta a ponta: do teste até a ferramenta que o Claude chama. Marque as tarefas que a H03 precisa.</p>
   <p class="historia"><b>H03.</b> Como editor de moda, quero reusar um prompt trocando só os looks, para não reescrever tudo a cada coleção.</p>
-
-  <div class="colunas" id="colunas"></div>
+  <fieldset class="tarefas" id="tarefas" aria-label="Tarefas da H03"></fieldset>
   <div class="actions">
-    <button class="primary" id="conferir" type="button">Conferir a fatia</button>
+    <button class="primary" id="conferir" type="button">Conferir</button>
     <button id="recomecar" type="button">Recomeçar</button>
   </div>
   <p class="feedback" id="feedback" aria-live="polite"></p>
-  <div class="fatia" id="fatia" hidden>
-    <h3>A fatia montada: a H03 de ponta a ponta</h3>
+  <div class="resultado" id="resultado" hidden>
+    <p><b>Essa é a fatia da H03.</b> São quatro tarefas, uma em cada camada, e todas servem à mesma história:</p>
     <ol>
-      <li><code>teste.ts</code>: o teste "reusa trocando os looks" diz o que precisa ser verdade.</li>
-      <li><code>modelo.ts</code>: <code>preencherLook</code> troca o <code>{{look}}</code> pela peça.</li>
-      <li><code>repositorio.ts</code>: <code>salvarLooks</code> guarda os looks gerados.</li>
-      <li><code>servidorMcp.ts</code>: a ferramenta <code>reusar_prompt</code> junta tudo e responde ao Claude.</li>
+      <li><b>Teste:</b> diz o que precisa ser verdade (<code>teste.ts</code>).</li>
+      <li><b>Regra:</b> troca o <code>{{look}}</code> pela peça (<code>modelo.ts</code>).</li>
+      <li><b>Guardar:</b> salva os looks gerados (<code>repositorio.ts</code>).</li>
+      <li><b>Ferramenta:</b> o Claude chama e tudo se junta (<code>servidorMcp.ts</code>).</li>
     </ol>
+    <p style="margin-top:10px">As outras duas tarefas são de outras histórias: buscar é da H02 e aprovar é da H04.</p>
   </div>
-
-  <section class="bonus" aria-labelledby="bonus-titulo">
-    <p id="bonus-titulo"><b>Bônus.</b> Se o sistema fosse construído em camadas horizontais (todo o modelo, depois todo o repositório, depois todas as ferramentas), quando você descobriria que o <code>reusar_prompt</code> não funciona?</p>
-    <label><input type="radio" name="bonus" value="cedo"><span>Logo, ao escrever o <code>preencherLook</code>.</span></label>
-    <label><input type="radio" name="bonus" value="fim"><span>Só no fim, quando a última camada (as ferramentas) ficasse pronta e tudo fosse ligado.</span></label>
-    <label><input type="radio" name="bonus" value="nunca"><span>Nunca: o teste de cada camada já garante a história.</span></label>
-    <div class="actions"><button class="primary" id="conferir-bonus" type="button">Conferir bônus</button></div>
-    <p class="feedback" id="feedback-bonus" aria-live="polite"></p>
-  </section>
 </main>
 <script>
-  const GH = "https://github.com/brevvi/gerenciador-prompts/blob/main/functions/src/";
-  // Os pedaços são reais: todos existem no repositório. Só um por arquivo é da H03.
-  const colunas = [
-    { arquivo: "teste.ts", papel: "os critérios de aceite", certa: "h03", opcoes: [
-      ["h02", "o teste <code>busca por coleção</code>"],
-      ["h03", "o teste <code>reusa trocando os looks</code>"],
-      ["h04", "o teste <code>aprova o padrão</code>"] ] },
-    { arquivo: "modelo.ts", papel: "o domínio e as regras", certa: "h03", opcoes: [
-      ["h01", "a função <code>idDaColecao</code>"],
-      ["h05", "a interface <code>Entrega</code>"],
-      ["h03", "a função <code>preencherLook</code>"] ] },
-    { arquivo: "repositorio.ts", papel: "onde guardar", certa: "h03", opcoes: [
-      ["h03", "o método <code>salvarLooks</code>"],
-      ["h02", "o método <code>buscar</code>"],
-      ["h04", "o método <code>aprovar</code>"] ] },
-    { arquivo: "servidorMcp.ts", papel: "o que o Claude pode chamar", certa: "h03", opcoes: [
-      ["h01", "a ferramenta <code>salvar_prompt</code>"],
-      ["h05", "a ferramenta <code>entregar_colecao</code>"],
-      ["h03", "a ferramenta <code>reusar_prompt</code>"] ] },
+  // Seis tarefas em português simples: quatro são da H03 (uma por camada), duas são de outras histórias.
+  const tarefas = [
+    { texto: "Procurar prompts por coleção.", h03: false },
+    { texto: "Trocar o espaço <code>{{look}}</code> do prompt pela peça, por exemplo, “vestido midi”.", h03: true },
+    { texto: "Aprovar o prompt padrão da coleção.", h03: false },
+    { texto: "Escrever o teste: reusar um prompt com outros looks gera um texto novo para cada look.", h03: true },
+    { texto: "Guardar no banco os looks gerados.", h03: true },
+    { texto: "Criar a ferramenta que o Claude chama para reusar um prompt.", h03: true },
   ];
-  const historias = { h01: "H01 (salvar)", h02: "H02 (buscar)", h03: "H03", h04: "H04 (aprovar)", h05: "H05 (entregar)" };
-
-  const area = document.getElementById("colunas");
-  colunas.forEach((c, i) => {
-    const div = document.createElement("div");
-    div.className = "coluna";
-    div.innerHTML = `<h2>${c.arquivo}</h2><p class="papel">${c.papel}</p>`;
-    const grupo = document.createElement("fieldset");
-    grupo.className = "opcoes";
-    grupo.setAttribute("aria-label", `Pedaço da H03 em ${c.arquivo}`);
-    for (const [valor, texto] of c.opcoes) {
-      const label = document.createElement("label");
-      label.className = "opcao";
-      label.innerHTML = `<input type="radio" name="col${i}" value="${valor}"><span>${texto}</span>`;
-      grupo.append(label);
-    }
-    const veredito = document.createElement("p");
-    veredito.className = "veredito";
-    veredito.setAttribute("aria-live", "polite");
-    div.append(grupo, veredito);
-    area.append(div);
-    grupo.addEventListener("change", () => { div.classList.remove("certa", "errada"); veredito.textContent = ""; });
+  const area = document.getElementById("tarefas");
+  tarefas.forEach((t, i) => {
+    const label = document.createElement("label");
+    label.className = "tarefa";
+    label.innerHTML = `<input type="checkbox" name="t${i}"><span>${t.texto}</span>`;
+    area.append(label);
   });
-
+  const fb = document.getElementById("feedback");
+  const resultado = document.getElementById("resultado");
   document.getElementById("conferir").addEventListener("click", () => {
-    let acertos = 0, faltando = 0;
-    colunas.forEach((c, i) => {
-      const div = area.children[i];
-      const veredito = div.querySelector(".veredito");
-      const escolha = document.querySelector(`input[name="col${i}"]:checked`)?.value;
-      div.classList.remove("certa", "errada");
-      if (!escolha) { faltando++; veredito.textContent = ""; return; }
-      if (escolha === c.certa) {
-        acertos++;
-        div.classList.add("certa");
-        veredito.innerHTML = `✓ É da H03. <a href="${GH}${c.arquivo}" target="_blank" rel="noopener">Ver no código ↗</a>`;
-      } else {
-        div.classList.add("errada");
-        veredito.textContent = `✗ Esse pedaço é da ${historias[escolha]}.`;
-      }
-    });
-    const fb = document.getElementById("feedback");
-    const fatia = document.getElementById("fatia");
-    fb.classList.toggle("error", acertos < colunas.length);
-    if (faltando) fb.textContent = "Escolha um pedaço em cada arquivo.";
-    else if (acertos < colunas.length) fb.textContent = `${acertos} de 4. Pergunte a cada pedaço: ele ajuda a reusar um prompt trocando os looks?`;
-    else fb.textContent = "Fatia completa: a H03 passa por todos os arquivos.";
-    fatia.hidden = acertos < colunas.length;
+    const marcadas = tarefas.map((_, i) => area.querySelector(`input[name="t${i}"]`).checked);
+    const certas = tarefas.filter((t, i) => t.h03 === marcadas[i]).length;
+    const tudo = certas === tarefas.length;
+    fb.classList.toggle("error", !tudo);
+    resultado.hidden = !tudo;
+    if (tudo) fb.textContent = "Certo!";
+    else if (!marcadas.some(Boolean)) fb.textContent = "Marque as tarefas que a H03 precisa.";
+    else fb.textContent = `${certas} de ${tarefas.length} certas. Pergunte a cada tarefa: ela serve a reusar um prompt trocando os looks?`;
   });
-
   document.getElementById("recomecar").addEventListener("click", () => {
-    document.querySelectorAll('input[type="radio"]').forEach((r) => { r.checked = false; });
-    [...area.children].forEach((d) => { d.classList.remove("certa", "errada"); d.querySelector(".veredito").textContent = ""; });
-    document.getElementById("feedback").textContent = "";
-    document.getElementById("feedback-bonus").textContent = "";
-    document.getElementById("fatia").hidden = true;
-  });
-
-  document.getElementById("conferir-bonus").addEventListener("click", () => {
-    const escolha = document.querySelector('input[name="bonus"]:checked')?.value;
-    const fb = document.getElementById("feedback-bonus");
-    fb.classList.toggle("error", escolha !== "fim");
-    fb.textContent = escolha === "fim"
-      ? "Isso. Em camadas, as peças só conversam no fim. Na fatia, a H03 funciona (e é testada) antes de começar a H04."
-      : "Não. Cada camada pode passar no próprio teste e, mesmo assim, as peças não se encaixarem. Só se descobre ao ligar tudo, no fim.";
+    area.querySelectorAll("input").forEach((c) => { c.checked = false; });
+    fb.textContent = "";
+    resultado.hidden = true;
   });
 </script>
 </body>
